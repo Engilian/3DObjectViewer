@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="default_fragmen_shader.fsh">fshader.fsh</file>
+        <file alias="default_vertex_shader.vsh">vshader.vsh</file>
+        <file>skybox.vsh</file>
+        <file>skybox.fsh</file>
+    </qresource>
+</RCC>

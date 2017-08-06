@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/example">
+        <file>suzanne.mtl</file>
+        <file>suzanne.obj</file>
+        <file>belka/belka.mtl</file>
+        <file>belka/belka.obj</file>
+        <file>belka/fiz_wood.jpg</file>
+        <file>belka/palissan.jpg</file>
+        <file>cube/cube.mtl</file>
+        <file>cube/cube.obj</file>
+    </qresource>
+</RCC>
