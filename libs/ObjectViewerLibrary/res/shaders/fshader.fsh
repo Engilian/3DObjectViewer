@@ -36,7 +36,7 @@ void main(void)
     vec4 ambientColor = ambientFactor * diffMatColor;
     resultColor += ambientColor;
 
-    // блики
+//    // блики
 //    vec4 specularColor = u_colorSpecular * u_lightPower * pow(max(0.0, dot( reflectLight, -eyeVector )), specularFactor) / (1.0 + 0.25 * pow(len, 2.0) );
 //    resultColor += specularColor;
 

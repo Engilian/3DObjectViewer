@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <thread>
 
-Canvas3D::Canvas3D() : QOpenGLWidget(), __pos( 0.0, 0.0, -5.0 )
+Canvas3D::Canvas3D() : QOpenGLWidget(), __mainCamera(0), __skyBox(0)
 {
 //    initializeOpenGLFunctions();
 
@@ -16,7 +16,13 @@ Canvas3D::Canvas3D() : QOpenGLWidget(), __pos( 0.0, 0.0, -5.0 )
 
 Canvas3D::~Canvas3D()
 {
+    if ( __mainCamera ) {
+        delete __mainCamera;
+    }
 
+    if ( __skyBox ) {
+        delete __skyBox;
+    }
 }
 
 QList<Object3D> *Canvas3D::objects()
@@ -24,9 +30,38 @@ QList<Object3D> *Canvas3D::objects()
     return &__objects;
 }
 
+ISkyBox *Canvas3D::skybox() const
+{
+    return __skyBox;
+}
+
+void Canvas3D::setSkyBox(ISkyBox *skybox)
+{
+    __skyBox = skybox;
+}
+
+void Canvas3D::destroySkyBox()
+{
+    if ( __skyBox ) {
+
+        delete __skyBox;
+        __skyBox = nullptr;
+    }
+}
+
+void Canvas3D::initDefaultSkyBox()
+{
+    __skyBox = new SkyBoxSixTextutes( 500.0f );
+}
+
+Camera3D *Canvas3D::mainCamera() const
+{
+    return __mainCamera;
+}
+
 void Canvas3D::initializeGL()
 {
-    QColor clearColor( Qt::green );
+    QColor clearColor( Qt::black );
     glClearColor( clearColor.red(), clearColor.green(), clearColor.blue(), 1 );
 
     glEnable( GL_DEPTH_TEST );
@@ -36,8 +71,6 @@ void Canvas3D::initializeGL()
 
     __mainCamera = new Camera3D();
     __mainCamera->translate( QVector3D( 0.0f, 0.0f, -10.0f ) );
-//    __skyBox = new SkyBoxOneCubeTexture();
-    __skyBox = new SkyBoxSixTextutes( 500.0f );
 }
 
 void Canvas3D::resizeGL(int w, int h)
@@ -45,32 +78,35 @@ void Canvas3D::resizeGL(int w, int h)
     float aspect = w / (float)h;
 
     __projection.setToIdentity();
-    __projection.perspective(45, aspect, 0.1f, 1500.0f);
+    __projection.perspective(45, aspect, 0.1f, 1000.0f);
 }
 
 void Canvas3D::paintGL()
 {
-//    __rotate = __rotate > 360 ? 0 : __rotate + 5;
-
-
-
     ++__tempFps;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    __skyBoxShaderProgram.bind();
-    __mainCamera->draw( &__skyBoxShaderProgram, context()->functions() );
-    __skyBoxShaderProgram.setUniformValue("u_projectionMatrix", __projection);
-    __skyBox->draw( &__skyBoxShaderProgram, context()->functions() );
-    __skyBoxShaderProgram.release();
+    // Отрисовка скайбокса
+    if ( __skyBox ) {
+
+        __skyBoxShaderProgram.bind();
+        if ( __mainCamera ) __mainCamera->draw( &__skyBoxShaderProgram, context()->functions() );
+        __skyBoxShaderProgram.setUniformValue("u_projectionMatrix", __projection);
+        __skyBox->draw( &__skyBoxShaderProgram, context()->functions() );
+        __skyBoxShaderProgram.release();
+    }
+
+    // Отрисовка объектов
 
     __shaderProgram.bind();
     __shaderProgram.setUniformValue("u_projectionMatrix", __projection);
-    __shaderProgram.setUniformValue("u_lightPosition", QVector4D(0.0, 0.0, 0.0, 1.0)); // x,y,z,1.0 - так как вершина а не вектор
+    __shaderProgram.setUniformValue("u_lightPosition", QVector4D(0.0, 0.0, 0.0, 10.0)); // x,y,z,1.0 - так как вершина а не вектор
     __shaderProgram.setUniformValue("u_lightPower", 5.0f);
     __shaderProgram.setUniformValue("u_colorSpecular", QVector4D(1.0, 0.0, 1.0, 1.0)); // цвет бликов
 
-    __mainCamera->draw( &__shaderProgram, context()->functions() );
+    if ( __mainCamera ) __mainCamera->draw( &__shaderProgram, context()->functions() );
+
     for ( const Object3D &obj: __objects ) {
         obj.get()->draw( &__shaderProgram, context()->functions() );
     }
@@ -105,11 +141,23 @@ void Canvas3D::initShaders()
     }
 }
 
+void Canvas3D::mouseReleaseEvent(QMouseEvent *event)
+{
+    if ( event->buttons () == Qt::RightButton ) {
+
+        if ( __mainCamera ) __mainCamera->resetRotation ();
+    }
+}
+
 void Canvas3D::mousePressEvent ( QMouseEvent *event )
 {
     if ( event->buttons () == Qt::LeftButton || event->button () == Qt::MidButton) {
 
         __mousePosition = QVector2D ( event->localPos () );
+    }
+    else if ( event->buttons () == Qt::RightButton ) {
+
+        if ( __mainCamera ) __mainCamera->resetRotation ();
     }
 
     event->accept ();
@@ -128,13 +176,13 @@ void Canvas3D::mouseMoveEvent ( QMouseEvent *event )
 
         __mainCamera->rotate( QQuaternion::fromAxisAndAngle ( axis, angle ) );
     }
-//    else if ( event->buttons () == Qt::MidButton ) {
+    else if ( event->buttons () == Qt::MidButton ) {
 
-//        QVector2D diff = QVector2D( event->localPos () ) - __mousePosition;
-//        __mousePosition = QVector2D( event->localPos () );
+        QVector2D diff = QVector2D( event->localPos () ) - __mousePosition;
+        __mousePosition = QVector2D( event->localPos () );
 
-//        __mainCamera->translate( QVector3D( diff.x (), -diff.y (), 0 ) / 250.0f );
-//    }
+        __mainCamera->translate( QVector3D( diff.x (), -diff.y (), 0 ) / 250.0f );
+    }
 }
 
 void Canvas3D::wheelEvent ( QWheelEvent *event )
@@ -152,11 +200,20 @@ void Canvas3D::__checkFps()
 {
     while ( true ) {
 
-        fps = __tempFps;
+        __fps = __tempFps;
         __tempFps = 0;
-        qDebug() << "fps: " << fps;
+        qDebug() << "fps: " << __fps;
+
+
+        emit Fps ( __fps );
+
         std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
 
     }
+}
+
+int Canvas3D::fps() const
+{
+    return __fps;
 }

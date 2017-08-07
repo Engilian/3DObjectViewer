@@ -24,3 +24,8 @@ void Camera3D::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions)
     viewMatrix = viewMatrix * _globalTransform.inverted();
     program->setUniformValue("u_viewMatrix", viewMatrix);
 }
+
+void Camera3D::resetRotation()
+{
+    _rotate = QQuaternion();
+}

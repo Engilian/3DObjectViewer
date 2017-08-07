@@ -10,7 +10,9 @@ public:
     ~Camera3D();
 public:
 
-    void draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions);
+    void draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions );
+
+    void resetRotation();
 };
 
 #endif // CAMERA_3D_H

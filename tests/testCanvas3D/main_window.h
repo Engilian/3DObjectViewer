@@ -16,6 +16,10 @@ public:
 
     void init();
 
+    void initCubes();
+
+    void initBelka();
+
 private:
 
     Canvas3D __canvas;

@@ -61,7 +61,7 @@ private:
     ///
     /// \brief Текстура
     ///
-    QOpenGLTexture  *__texture;
+    QOpenGLTexture  *__texture = nullptr;
 };
 
 #endif // SIMPLEOBJECT3D_H

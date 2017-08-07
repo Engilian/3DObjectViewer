@@ -1,11 +1,12 @@
 #include "simple_object_3d.h"
 
-SimpleObject3d::SimpleObject3d():
-    __indexBuffer(QOpenGLBuffer::IndexBuffer), __texture(0), IObject3D()
+SimpleObject3d::SimpleObject3d(): IObject3D(),
+    __indexBuffer(QOpenGLBuffer::IndexBuffer)
 {
 
 }
 SimpleObject3d::SimpleObject3d(QVector<VertexData> &vertData, const QVector<GLuint> &indexes, const QImage &texture):
+    IObject3D(),
     __indexBuffer(QOpenGLBuffer::IndexBuffer), __texture(0)
 {
     init(vertData, indexes, texture);

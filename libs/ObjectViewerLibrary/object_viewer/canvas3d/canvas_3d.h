@@ -33,6 +33,42 @@ public:
     ///
     QList<Object3D> *objects();
 
+public:
+
+    ///
+    /// \brief Скайбокс
+    ///
+    ISkyBox *skybox() const;
+
+    ///
+    /// \brief Установить скайбокс
+    /// \param skybox скайбокс
+    ///
+    void setSkyBox( ISkyBox *skybox );
+
+    ///
+    /// \brief Уничтожить скайбокс
+    ///
+    void destroySkyBox();
+
+    ///
+    /// \brief Инициализировать skybox по умолчнию
+    ///
+    void initDefaultSkyBox();
+
+public:
+
+    ///
+    /// \brief Получить камеру
+    /// \return камера
+    ///
+    Camera3D *mainCamera() const;
+
+    ///
+    /// \brief fps
+    ///
+    int fps() const;
+
 protected:
 
     ///
@@ -59,41 +95,65 @@ protected:
 
 protected:
 
+    void mouseReleaseEvent ( QMouseEvent *event );
     void mousePressEvent ( QMouseEvent *event );
     void mouseMoveEvent ( QMouseEvent *event );
     void wheelEvent ( QWheelEvent *event );
 
 private:
 
+    ///
+    /// \brief Метод подсчета fps
+    ///
     void __checkFps();
 
 private:
 
+    ///
+    /// \brief Матрица проекции
+    ///
     QMatrix4x4              __projection;
-    QOpenGLShaderProgram    __shaderProgram;
-    QOpenGLShaderProgram    __skyBoxShaderProgram;
-    QVector2D               __mousePosition;
-    QVector3D               __pos;
-    QQuaternion             __rotate;
 
+    ///
+    /// \brief Основной шейдер для объектов
+    ///
+    QOpenGLShaderProgram    __shaderProgram;
+
+    ///
+    /// \brief Шейдр для skybox
+    ///
+    QOpenGLShaderProgram    __skyBoxShaderProgram;
+
+    ///
+    /// \brief Полседняя позиция мыши
+    ///
+    QVector2D               __mousePosition;
+
+    ///
+    /// \brief Камера для отображения
+    ///
     Camera3D                *__mainCamera;
+
+    ///
+    /// \brief Скайбокс
+    ///
     ISkyBox                 *__skyBox;
 
     ///
     /// \brief Таймер перерисовки
     ///
-    QTimer __repaintTimer;
+    QTimer                  __repaintTimer;
 
     ///
     /// \brief Список объектов для отрисовки
     ///
-    QList<Object3D> __objects;
+    QList<Object3D>         __objects;
 
 
     ///
     /// \brief Текущий fps
     ///
-    int fps = 0;
+    int __fps = 0;
 
     ///
     /// \brief Промежуточный расчет fps
@@ -101,6 +161,8 @@ private:
     int __tempFps = 0;
 
 signals:
+
+    void Fps( int fps );
 
 public slots:
 };

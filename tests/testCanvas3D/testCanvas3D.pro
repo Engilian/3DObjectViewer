@@ -25,9 +25,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        main_window.cpp
+        main_window.cpp \
+    load_object_runnuble.cpp
 
-HEADERS  += main_window.h
+HEADERS  += main_window.h \
+    load_object_runnuble.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../libs/ObjectViewerLibrary/release/ -lobj_viewer_3d
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../libs/ObjectViewerLibrary/debug/ -lobj_viewer_3d

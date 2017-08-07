@@ -1,19 +1,19 @@
-#include "object_loader.h"
+#include "object_loader_simple_object3d.h"
 
 #include <QFile>
-#include "../shapes/triangle_object/triangleobject3d.h"
+#include "../shapes/other/simple_object_3d.h"
 
-ObjectLoader::ObjectLoader()
+SimpleObject3dLoader::SimpleObject3dLoader()
 {
 
 }
 
-ObjectLoader::~ObjectLoader()
+SimpleObject3dLoader::~SimpleObject3dLoader()
 {
 
 }
 
-QList<IObject3D *> ObjectLoader::load(QString pathObj, QString pathMtl)
+QList<IObject3D *> SimpleObject3dLoader::load(QString pathObj, QString pathMtl)
 {
     QList<IObject3D *> result;
 
@@ -30,8 +30,13 @@ QList<IObject3D *> ObjectLoader::load(QString pathObj, QString pathMtl)
         return result;
     }
 
-    TriangleObject3D *obj = nullptr;
+    SimpleObject3d *obj = nullptr;
     QString lastMaterial;
+
+    QVector<VertexData> vertexes;
+    QVector<GLuint>     indexes;
+
+    QImage              texture;
 
     QList<QVector3D>    points;
     QList<QVector3D>    normals;
@@ -50,23 +55,21 @@ QList<IObject3D *> ObjectLoader::load(QString pathObj, QString pathMtl)
             if ( line.indexOf( "usemtl" ) != -1 ) {
 
                 lastMaterial = line.trimmed().split( ' ' ).last();
-
-                if ( obj != nullptr ) {
-
-                    QImage texture = loadTetxture( pathMtl, lastMaterial );
-                    obj->initTexture( texture );
-                }
+                texture = loadTetxture( pathMtl, lastMaterial );
             }
         }
         else if ( line[0] == 'o' ) {
 
             if ( obj != nullptr ) {
 
-                qDebug() << "loaded: " << obj->name() << obj->triangleCount() ;
+                qDebug() << "loaded: " << obj->name() << vertexes.size () << indexes.size ();
+                obj->init ( vertexes, indexes, texture );
+                vertexes.clear ();
+                indexes.clear ();
             }
 
             const QString name = line.trimmed().split( ' ' ).last();
-            obj = new TriangleObject3D();
+            obj = new SimpleObject3d();
             obj->setName( name );
             result << obj;
         }
@@ -97,7 +100,12 @@ QList<IObject3D *> ObjectLoader::load(QString pathObj, QString pathMtl)
             else if ( line[0] == 'f' ) {
 
                 QVector<VertexData> temp = readPolygon( line, &points, &normals, &uv );
-                obj->addTriangle( temp );
+                GLuint start = vertexes.size ();
+
+                for ( VertexData &vertex: temp ) {
+                    vertexes << vertex;
+                    indexes << start++;
+                }
             }
 
         }
@@ -105,7 +113,10 @@ QList<IObject3D *> ObjectLoader::load(QString pathObj, QString pathMtl)
 
     if ( obj != nullptr ) {
 
-        qDebug() << "loaded: " << obj->name() << obj->triangleCount() ;
+        qDebug() << "loaded: " << obj->name() << vertexes.size () << indexes.size ();
+        obj->init ( vertexes, indexes, texture );
+        vertexes.clear ();
+        indexes.clear ();
     }
 
 
@@ -116,7 +127,7 @@ QList<IObject3D *> ObjectLoader::load(QString pathObj, QString pathMtl)
     return result;
 }
 
-QImage ObjectLoader::loadTetxture(QString pathMtl, QString nameMtl)
+QImage SimpleObject3dLoader::loadTetxture(QString pathMtl, QString nameMtl)
 {
     QImage image;
 
@@ -171,7 +182,7 @@ QImage ObjectLoader::loadTetxture(QString pathMtl, QString nameMtl)
     return image;//QImage( ":/example/test_brick.jpg" );
 }
 
-QVector3D ObjectLoader::readVector3D(const QString raw)
+QVector3D SimpleObject3dLoader::readVector3D(const QString raw)
 {
     QVector3D vector;
 
@@ -196,7 +207,7 @@ QVector3D ObjectLoader::readVector3D(const QString raw)
     return vector;
 }
 
-QVector2D ObjectLoader::readVector2D(const QString raw)
+QVector2D SimpleObject3dLoader::readVector2D(const QString raw)
 {
     QVector2D vector;
 
@@ -216,7 +227,7 @@ QVector2D ObjectLoader::readVector2D(const QString raw)
     return vector;
 }
 
-QVector<VertexData> ObjectLoader::readPolygon(const QString raw, QList<QVector3D> *points, QList<QVector3D> *normas, QList<QVector2D> *uvs)
+QVector<VertexData> SimpleObject3dLoader::readPolygon(const QString raw, QList<QVector3D> *points, QList<QVector3D> *normas, QList<QVector2D> *uvs)
 {
     QVector<VertexData> result;
 
@@ -231,7 +242,7 @@ QVector<VertexData> ObjectLoader::readPolygon(const QString raw, QList<QVector3D
     return result;
 }
 
-VertexData ObjectLoader::readVertexData(const QString raw, QList<QVector3D> *points, QList<QVector3D> *normas, QList<QVector2D> *uvs)
+VertexData SimpleObject3dLoader::readVertexData(const QString raw, QList<QVector3D> *points, QList<QVector3D> *normas, QList<QVector2D> *uvs)
 {
     QStringList list = raw.split( '/' );
     VertexData vertex;
