@@ -1,4 +1,4 @@
-QT       += opengl
+QT       += opengl xml
 QT       -= gui
 
 TARGET = obj_viewer_3d
@@ -22,7 +22,8 @@ SOURCES += object_viewer_info.cpp \
     object_viewer/object3d/object_loader/object_loader_triangle_object3d.cpp \
     object_viewer/object3d/object_loader/object_loader_simple_object3d.cpp \
     object_viewer/scene3d/i_scene_3d.cpp \
-    object_viewer/scene3d/simple_scene_3d.cpp
+    object_viewer/scene3d/simple_scene_3d.cpp \
+    object_viewer/object3d/skybox/loader/skb/skb_loader.cpp
 
 HEADERS += object_viewer_info.h \
     object_viewer/object3d/i_object_3d.h \
@@ -43,7 +44,8 @@ HEADERS += object_viewer_info.h \
     object_viewer/object3d/object_loader/object_loader_simple_object3d.h \
     object_viewer/scene3d/i_scene_3d.h \
     object_viewer/scene3d/simple_scene_3d.h \
-    object_viewer/scene3d/scene_3d.h
+    object_viewer/scene3d/scene_3d.h \
+    object_viewer/object3d/skybox/loader/skb/skb_loader.h
 
 RESOURCES += \
     res/shaders/shaders.qrc \

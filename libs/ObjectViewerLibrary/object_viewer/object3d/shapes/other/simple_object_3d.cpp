@@ -38,6 +38,8 @@ SimpleObject3d::~SimpleObject3d()
         delete __texture;
     }
 
+
+    qDebug() << "deleted: " << name ();
 }
 
 void SimpleObject3d::init(QVector<VertexData> &vertData, const QVector<GLuint> &indexes, const QImage &texture)

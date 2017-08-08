@@ -69,6 +69,18 @@ public:
     ///
     int fps() const;
 
+    ///
+    /// \brief Угол обзора
+    /// \return угол
+    ///
+    int viewingAngle() const;
+
+    ///
+    /// \brief Установить угол обзора
+    /// \param viewingAngle угол
+    ///
+    void setViewingAngle(int viewingAngle);
+
 protected:
 
     ///
@@ -151,6 +163,11 @@ private:
 
 
     ///
+    /// \brief Угол обзора
+    ///
+    int                     __viewingAngle = 45;
+
+    ///
     /// \brief Текущий fps
     ///
     int __fps = 0;
@@ -160,11 +177,18 @@ private:
     ///
     int __tempFps = 0;
 
+    ///
+    /// \brief Ожидание обновления
+    ///
+    bool                    __waitToUpdate;
+
 signals:
 
     void Fps( int fps );
 
 public slots:
+
+    void updateCanvas();
 };
 
 #endif // I_CANVAS_3D_H

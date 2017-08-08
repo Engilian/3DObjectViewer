@@ -7,7 +7,7 @@ Canvas3D::Canvas3D() : QOpenGLWidget(), __mainCamera(0), __skyBox(0)
 {
 //    initializeOpenGLFunctions();
 
-    connect ( &__repaintTimer, SIGNAL(timeout()), this, SLOT(update()));
+    connect ( &__repaintTimer, SIGNAL(timeout()), this, SLOT(updateCanvas()));
     __repaintTimer.start ( 1000.0 / 60.0  );
 
     std::thread th( std::bind( &Canvas3D::__checkFps, this ) );
@@ -78,7 +78,7 @@ void Canvas3D::resizeGL(int w, int h)
     float aspect = w / (float)h;
 
     __projection.setToIdentity();
-    __projection.perspective(45, aspect, 0.1f, 1000.0f);
+    __projection.perspective( __viewingAngle, aspect, 0.1f, 2000.0f );
 }
 
 void Canvas3D::paintGL()
@@ -112,6 +112,8 @@ void Canvas3D::paintGL()
     }
 
     __shaderProgram.release();
+
+    __waitToUpdate = false;
 }
 
 void Canvas3D::initShaders()
@@ -202,15 +204,32 @@ void Canvas3D::__checkFps()
 
         __fps = __tempFps;
         __tempFps = 0;
-        qDebug() << "fps: " << __fps;
-
-
         emit Fps ( __fps );
 
         std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
 
     }
+}
+
+void Canvas3D::updateCanvas()
+{
+    if  ( !__waitToUpdate ) {
+        __waitToUpdate = true;
+        update ();
+    }
+}
+
+int Canvas3D::viewingAngle() const
+{
+    return __viewingAngle;
+}
+
+void Canvas3D::setViewingAngle(int viewingAngle)
+{
+    __viewingAngle = viewingAngle;
+
+    resizeGL ( width (), height () );
 }
 
 int Canvas3D::fps() const

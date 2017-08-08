@@ -1,6 +1,8 @@
 #include "object_loader_simple_object3d.h"
 
+#include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include "../shapes/other/simple_object_3d.h"
 
 SimpleObject3dLoader::SimpleObject3dLoader()
@@ -55,7 +57,7 @@ QList<IObject3D *> SimpleObject3dLoader::load(QString pathObj, QString pathMtl)
             if ( line.indexOf( "usemtl" ) != -1 ) {
 
                 lastMaterial = line.trimmed().split( ' ' ).last();
-                texture = loadTetxture( pathMtl, lastMaterial );
+                texture = loadTexture( pathMtl, lastMaterial );
             }
         }
         else if ( line[0] == 'o' ) {
@@ -127,13 +129,11 @@ QList<IObject3D *> SimpleObject3dLoader::load(QString pathObj, QString pathMtl)
     return result;
 }
 
-QImage SimpleObject3dLoader::loadTetxture(QString pathMtl, QString nameMtl)
+QImage SimpleObject3dLoader::loadTexture(QString pathMtl, QString nameMtl)
 {
     QImage image;
 
     QFile f( pathMtl );
-
-    //    if ( f.exists() ) {
 
     if ( f.open( QIODevice::ReadOnly ) ) {
 
@@ -148,10 +148,15 @@ QImage SimpleObject3dLoader::loadTetxture(QString pathMtl, QString nameMtl)
                 if ( line.indexOf( "map_Kd" ) == 0 ) {
 
                     QString path = line.mid( 6 ).trimmed();
-                    image.load( path );
-                    qDebug() << "find " << path;
-                    f.close();
-                    return image;
+
+                    bool okLoadTexture = false;
+                    image = loadTexture ( pathMtl, path, &okLoadTexture );
+
+                    if ( okLoadTexture ) {
+
+                        f.close();
+                        return image;
+                    }
                 }
 
             }
@@ -163,7 +168,6 @@ QImage SimpleObject3dLoader::loadTetxture(QString pathMtl, QString nameMtl)
 
                     if ( nameMtl.compare( name ) == 0 ) {
 
-//                        qDebug() << "Найден материал " << name;
                         isFindMaterial = true;
                     }
                 }
@@ -178,8 +182,41 @@ QImage SimpleObject3dLoader::loadTetxture(QString pathMtl, QString nameMtl)
     //    }
 
     qDebug() << "Текстура не найдена, будет использована по умолчанию";
-    image.load( ":/example/test_brick.jpg" );
+//    image.load( ":/example/test_brick.jpg" );
     return image;//QImage( ":/example/test_brick.jpg" );
+}
+
+QImage SimpleObject3dLoader::loadTexture(QString pathMtl, QString pathTexture, bool *ok)
+{
+    *ok = true;
+
+    if ( pathTexture[ 0 ] == ':' ) {
+
+        return QImage( pathTexture );
+    }
+    else {
+
+        QFileInfo textureFileInfo( pathTexture );
+        QFileInfo mtlFileInfo ( pathMtl );
+
+        QString fileName  = textureFileInfo.fileName ();
+        QDir mtlDirectory = mtlFileInfo.dir ();
+
+        QFile f( mtlDirectory.absoluteFilePath ( fileName ) );
+
+        if  ( f.exists () ) {
+
+            return QImage ( mtlDirectory.absoluteFilePath ( fileName ) );
+        }
+        else {
+
+            return QImage( pathTexture );
+        }
+    }
+
+    *ok = false;
+
+    return QImage();
 }
 
 QVector3D SimpleObject3dLoader::readVector3D(const QString raw)
@@ -237,6 +274,20 @@ QVector<VertexData> SimpleObject3dLoader::readPolygon(const QString raw, QList<Q
     for ( const QString &vertex: list ) {
 
         result << readVertexData( vertex.trimmed(), points, normas, uvs );
+    }
+
+    if ( result.count () == 4 ) {
+
+        QVector<VertexData> data = result;
+        result.clear ();
+
+        for ( int i = 0; i < 3; ++i ) {
+
+            result << data.takeFirst ();
+        }
+
+        result << result.last () << data.takeFirst () << result.first ();
+
     }
 
     return result;

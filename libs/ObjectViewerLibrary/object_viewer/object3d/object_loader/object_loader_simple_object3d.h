@@ -19,7 +19,9 @@ public:
 
 public:
 
-    QImage loadTetxture( QString pathMtl, QString nameMtl );
+    QImage loadTexture( QString pathMtl, QString nameMtl );
+
+    QImage loadTexture( QString pathMtl, QString pathTexture, bool *ok );
 
     QVector3D readVector3D ( const QString raw );
     QVector2D readVector2D ( const QString raw );

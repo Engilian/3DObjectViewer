@@ -4,10 +4,12 @@
 #include <QLayout>
 #include <QKeyEvent>
 #include <QInputDialog>
+#include <QFileDialog>
 
 #include <object_viewer/object3d/object_loader/object_loader.h>
 #include <object_viewer/object3d/shapes/cube/example_cube_3d.h>
 #include <object_viewer/object3d/group/group_3d.h>
+#include <object_viewer/object3d/skybox/loader/skb/skb_loader.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -63,22 +65,19 @@ MainWindow::~MainWindow()
 void MainWindow::initDefaultScene()
 {
     __viewer->initDefaultSkyBox ();
-
-    Object3D obj( new  ExampleCube3d() );
-    __scene->addObject ( obj );
+    __viewer->setViewingAngle ( 40 );
 }
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
-//    if ( watched == __listObjects.forEventFilter () || watched == &__listObjects ) {
+    Q_UNUSED( watched );
 
-        if ( event->type () == QEvent::KeyRelease ) {
+    if ( event->type () == QEvent::KeyRelease ) {
 
 
-            keyReleaseEvent ( dynamic_cast<QKeyEvent*>( event ) );
+        keyReleaseEvent ( dynamic_cast<QKeyEvent*>( event ) );
 
-        }
-//    }
+    }
 
     return false;
 }
@@ -87,7 +86,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     float stepTranslate = 0.10f;
 
-    qDebug() << event->key ();
+//    qDebug() << event->key ();
 
     if ( event->key () == Qt::Key_W ) {
 
@@ -178,7 +177,25 @@ void MainWindow::__clearSkyBox()
 
 void MainWindow::__loadSkyBox()
 {
-    qDebug() << "Load skybox";
+    QFileDialog dialog( this, "Choice my *.skb file" );
+    dialog.setFilter ( QDir::Files );
+    dialog.setDirectory ( QApplication::applicationDirPath () );
+    dialog.setNameFilter(tr("Skybox xml file (*.skb)"));
+    dialog.setMinimumSize ( 800, 600 );
+
+    if ( dialog.exec () ) {
+        qDebug() << dialog.selectedFiles ().first ();
+
+        SkbLoader loader;
+
+        auto *skybox = loader.load ( dialog.selectedFiles ().first () );
+
+        if ( skybox ) {
+
+            __viewer->destroySkyBox ();
+            __viewer->setSkyBox ( skybox );
+        }
+    }
 }
 
 void MainWindow::__loadSkyBoxOneFile()
@@ -199,7 +216,40 @@ void MainWindow::__createDefaultSkyBox()
 
 void MainWindow::__loadObject()
 {
+    QFileDialog dialog( this, "Choice *.obj file" );
+    dialog.setFilter ( QDir::Files );
+    dialog.setDirectory ( QApplication::applicationDirPath () );
+    dialog.setNameFilter(tr("Wavefront file (*.obj)"));
+    dialog.setMinimumSize ( 800, 600 );
 
+    if ( dialog.exec () ) {
+        qDebug() << dialog.selectedFiles ().first ();
+
+        ObjectLoader loader;
+
+        QFileInfo objInfo ( dialog.selectedFiles ().first () );
+        QDir dir = objInfo.dir ();
+
+        QList<IObject3D*> objects = loader.load ( dialog.selectedFiles ().first (), dir.absoluteFilePath ( objInfo.fileName ().remove ( ".obj" ) + ".mtl" ) );
+
+        auto *group = new Group3D( objInfo.fileName () );
+        Object3D obj( group );
+
+        for ( IObject3D *o: objects ) {
+
+            group->addObject ( Object3D( o ) );
+        }
+
+        __scene->addObject ( obj );
+
+//        auto *skybox = loader.load ( dialog.selectedFiles ().first () );
+
+//        if ( skybox ) {
+
+//            __viewer->destroySkyBox ();
+//            __viewer->setSkyBox ( skybox );
+//        }
+    }
 }
 
 void MainWindow::__createSquirrelsArmy()
@@ -221,6 +271,7 @@ void MainWindow::__createSquirrelsArmy()
     Group3D *group = new Group3D( "My little army!" );
     ObjectLoader loader;
 
+    float posX = ( rowLength * ( 1.0 * step ) ) / 2;
     QVector3D pos( 0.0, 0.0, 0.0 );
 
     for ( int i = 0; i < armySize; ++i ) {
@@ -248,6 +299,7 @@ void MainWindow::__createSquirrelsArmy()
         QApplication::processEvents ();
     }
 
+    group->translate ( QVector3D( -posX, 0.0, 0.0 ) );
     __scene->addObject ( Object3D( group ) );
 }
 

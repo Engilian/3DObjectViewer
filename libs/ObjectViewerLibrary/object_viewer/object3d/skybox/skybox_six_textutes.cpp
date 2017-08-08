@@ -45,10 +45,10 @@ void SkyBoxSixTextutes::__init(float size, QList<QImage> textures)
     QVector<GLuint> indexes;
 
     // Сзади
-    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2, width_div_2), QVector2D(0.0f, 1.0f), QVector3D(0.0, 0.0, -1.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2, -width_div_2, width_div_2), QVector2D(0.0f, 0.0f), QVector3D(0.0, 0.0, -1.0)));
-    vertexes.append(VertexData(QVector3D(width_div_2, width_div_2, width_div_2), QVector2D(1.0f, 1.0f), QVector3D(0.0, 0.0, -1.0)));
-    vertexes.append(VertexData(QVector3D(width_div_2, -width_div_2, width_div_2), QVector2D(1.0f, 0.0f), QVector3D(0.0, 0.0, -1.0)));
+    vertexes.append( VertexData( QVector3D( -width_div_2, width_div_2, width_div_2 ),   QVector2D( 0.0f, 1.0f ), QVector3D( 0.0, 0.0, -1.0 ) ) );
+    vertexes.append( VertexData( QVector3D( -width_div_2, -width_div_2, width_div_2 ),  QVector2D( 0.0f, 0.0f ), QVector3D( 0.0, 0.0, -1.0 ) ) );
+    vertexes.append( VertexData( QVector3D( width_div_2,  width_div_2, width_div_2 ),   QVector2D( 1.0f, 1.0f ), QVector3D( 0.0, 0.0, -1.0 ) ) );
+    vertexes.append( VertexData( QVector3D( width_div_2,  -width_div_2, width_div_2 ),  QVector2D( 1.0f, 0.0f ), QVector3D( 0.0, 0.0, -1.0 ) ) );
 
     for ( int i = 0; i < 6; ++i ) {
 
@@ -67,10 +67,10 @@ void SkyBoxSixTextutes::__init(float size, QList<QImage> textures)
     indexes.clear();
 
     // Справа
-    vertexes.append(VertexData(QVector3D(width_div_2, width_div_2, width_div_2), QVector2D(0.0f, 1.0f), QVector3D(-1.0, 0.0, 0.0)));
-    vertexes.append(VertexData(QVector3D(width_div_2, -width_div_2, width_div_2), QVector2D(0.0f, 0.0f), QVector3D(-1.0, 0.0, 0.0)));
-    vertexes.append(VertexData(QVector3D(width_div_2, width_div_2, -width_div_2), QVector2D(1.0f, 1.0f), QVector3D(-1.0, 0.0, 0.0)));
-    vertexes.append(VertexData(QVector3D(width_div_2, -width_div_2, -width_div_2), QVector2D(1.0f, 0.0f), QVector3D(-1.0, 0.0, 0.0)));
+    vertexes.append( VertexData( QVector3D( width_div_2, width_div_2, width_div_2 ),    QVector2D( 0.0f, 1.0f ), QVector3D( -1.0, 0.0, 0.0)) );
+    vertexes.append( VertexData( QVector3D( width_div_2, -width_div_2, width_div_2 ),   QVector2D( 0.0f, 0.0f ), QVector3D( -1.0, 0.0, 0.0)) );
+    vertexes.append( VertexData( QVector3D( width_div_2, width_div_2, -width_div_2 ),   QVector2D( 1.0f, 1.0f ), QVector3D( -1.0, 0.0, 0.0)) );
+    vertexes.append( VertexData( QVector3D( width_div_2, -width_div_2, -width_div_2 ),  QVector2D( 1.0f, 0.0f ), QVector3D( -1.0, 0.0, 0.0)) );
 
     for ( int i = 0; i < 6; ++i ) {
 
@@ -89,10 +89,10 @@ void SkyBoxSixTextutes::__init(float size, QList<QImage> textures)
     indexes.clear();
 
     // Сверху
-    vertexes.append(VertexData(QVector3D(width_div_2, width_div_2, width_div_2), QVector2D(0.0f, 1.0f), QVector3D(0.0, -1.0, 0.0)));
-    vertexes.append(VertexData(QVector3D(width_div_2, width_div_2, -width_div_2), QVector2D(0.0f, 0.0f), QVector3D(0.0, -1.0, 0.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2, width_div_2), QVector2D(1.0f, 1.0f), QVector3D(0.0, -1.0, 0.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2, -width_div_2), QVector2D(1.0f,0.0f), QVector3D(0.0, -1.0, 0.0)));
+    vertexes.append(VertexData( QVector3D( width_div_2, width_div_2, width_div_2 ),     QVector2D( 0.0f, 1.0f ), QVector3D( 0.0, -1.0, 0.0 ) ) );
+    vertexes.append(VertexData( QVector3D( width_div_2, width_div_2, -width_div_2 ),    QVector2D( 0.0f, 0.0f ), QVector3D( 0.0, -1.0, 0.0 ) ) );
+    vertexes.append(VertexData( QVector3D( -width_div_2, width_div_2, width_div_2 ),    QVector2D( 1.0f, 1.0f ), QVector3D( 0.0, -1.0, 0.0 ) ) );
+    vertexes.append(VertexData( QVector3D( -width_div_2, width_div_2, -width_div_2 ),   QVector2D( 1.0f, 0.0f ), QVector3D( 0.0, -1.0, 0.0 ) ) );
 
     for ( int i = 0; i < 6; ++i ) {
 
@@ -111,10 +111,10 @@ void SkyBoxSixTextutes::__init(float size, QList<QImage> textures)
     indexes.clear();
 
     // Спереди
-    vertexes.append(VertexData(QVector3D(width_div_2, width_div_2, -width_div_2), QVector2D(0.0f, 1.0f), QVector3D(0.0, 0.0, 1.0)));
-    vertexes.append(VertexData(QVector3D(width_div_2, -width_div_2, -width_div_2), QVector2D(0.0f,0.0f), QVector3D(0.0, 0.0, 1.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2, -width_div_2), QVector2D(1.0f, 1.0f), QVector3D(0.0, 0.0, 1.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2, -width_div_2, -width_div_2), QVector2D(1.0f,0.0f), QVector3D(0.0, 0.0, 1.0)));
+    vertexes.append(VertexData( QVector3D( width_div_2, width_div_2, -width_div_2 ),    QVector2D( 0.0f, 1.0f ), QVector3D( 0.0, 0.0, 1.0 ) ) );
+    vertexes.append(VertexData( QVector3D( width_div_2, -width_div_2, -width_div_2 ),   QVector2D( 0.0f,0.0f ), QVector3D( 0.0, 0.0, 1.0 ) ) );
+    vertexes.append(VertexData( QVector3D( -width_div_2, width_div_2, -width_div_2 ),   QVector2D( 1.0f, 1.0f ), QVector3D( 0.0, 0.0, 1.0 ) ) );
+    vertexes.append(VertexData( QVector3D( -width_div_2, -width_div_2, -width_div_2 ),  QVector2D( 1.0f,0.0f ), QVector3D( 0.0, 0.0, 1.0 ) ) );
 
     for ( int i = 0; i < 6; ++i ) {
 
@@ -134,10 +134,10 @@ void SkyBoxSixTextutes::__init(float size, QList<QImage> textures)
 
 
     // Слева
-    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2, -width_div_2), QVector2D(0.0f, 1.0f), QVector3D(1.0, 0.0, 0.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2, -width_div_2, -width_div_2), QVector2D(0.0f, 0.0f), QVector3D(1.0, 0.0, 0.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2, width_div_2), QVector2D(1.0f, 1.0f), QVector3D(1.0, 0.0, 0.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2, -width_div_2, width_div_2), QVector2D(1.0f, 0.0f), QVector3D(1.0, 0.0, 0.0)));
+    vertexes.append(VertexData( QVector3D( -width_div_2, width_div_2, -width_div_2 ),   QVector2D( 0.0f, 1.0f ), QVector3D( 1.0, 0.0, 0.0 ) ) );
+    vertexes.append(VertexData( QVector3D( -width_div_2, -width_div_2, -width_div_2 ),  QVector2D( 0.0f, 0.0f ), QVector3D( 1.0, 0.0, 0.0 ) ) );
+    vertexes.append(VertexData( QVector3D( -width_div_2, width_div_2, width_div_2 ),    QVector2D( 1.0f, 1.0f ), QVector3D( 1.0, 0.0, 0.0 ) ) );
+    vertexes.append(VertexData( QVector3D( -width_div_2, -width_div_2, width_div_2 ),   QVector2D( 1.0f, 0.0f ), QVector3D( 1.0, 0.0, 0.0 ) ) );
 
     for ( int i = 0; i < 6; ++i ) {
 
@@ -155,16 +155,12 @@ void SkyBoxSixTextutes::__init(float size, QList<QImage> textures)
     vertexes.clear();
     indexes.clear();
 
-//    vertexes.append(VertexData(QVector3D(width_div_2, width_div_2, width_div_2), QVector2D(0.0f, 1.0f), QVector3D(0.0, -1.0, 0.0)));
-//    vertexes.append(VertexData(QVector3D(width_div_2, width_div_2, -width_div_2), QVector2D(0.0f, 0.0f), QVector3D(0.0, -1.0, 0.0)));
-//    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2, width_div_2), QVector2D(1.0f, 1.0f), QVector3D(0.0, -1.0, 0.0)));
-//    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2, -width_div_2), QVector2D(1.0f,0.0f), QVector3D(0.0, -1.0, 0.0)));
 
     // Снизу
-    vertexes.append(VertexData(QVector3D(width_div_2, -width_div_2, -width_div_2), QVector2D(0.0f, 1.0f), QVector3D(0.0, 1.0, 0.0)));
-    vertexes.append(VertexData(QVector3D(width_div_2, -width_div_2, width_div_2), QVector2D(0.0f, 0.0f), QVector3D(0.0, 1.0, 0.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2, -width_div_2, -width_div_2), QVector2D(1.0f, 1.0f), QVector3D(0.0, 1.0, 0.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2, -width_div_2, width_div_2), QVector2D(1.0f, 0.0f), QVector3D(0.0, 1.0, 0.0)));
+    vertexes.append(VertexData( QVector3D( width_div_2, -width_div_2, -width_div_2 ),   QVector2D( 0.0f, 1.0f ), QVector3D( 0.0, 1.0, 0.0 ) ) );
+    vertexes.append(VertexData( QVector3D( width_div_2, -width_div_2, width_div_2 ),    QVector2D( 0.0f, 0.0f ), QVector3D( 0.0, 1.0, 0.0 ) ) );
+    vertexes.append(VertexData( QVector3D( -width_div_2, -width_div_2, -width_div_2 ),  QVector2D( 1.0f, 1.0f ), QVector3D( 0.0, 1.0, 0.0 ) ) );
+    vertexes.append(VertexData( QVector3D( -width_div_2, -width_div_2, width_div_2 ),   QVector2D( 1.0f, 0.0f ), QVector3D( 0.0, 1.0, 0.0 ) ) );
 
     for ( int i = 0; i < 6; ++i ) {
 
