@@ -186,6 +186,8 @@ signals:
 
     void Fps( int fps );
 
+    void InitGL();
+
 public slots:
 
     void updateCanvas();

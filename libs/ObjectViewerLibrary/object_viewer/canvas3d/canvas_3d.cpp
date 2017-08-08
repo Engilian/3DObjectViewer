@@ -71,6 +71,8 @@ void Canvas3D::initializeGL()
 
     __mainCamera = new Camera3D();
     __mainCamera->translate( QVector3D( 0.0f, 0.0f, -10.0f ) );
+
+    emit InitGL();
 }
 
 void Canvas3D::resizeGL(int w, int h)
