@@ -122,6 +122,16 @@ private:
 private:
 
     ///
+    /// \brief Структура для управления потоком
+    ///
+    struct ThreadRunInfo {
+        bool isRuning   = false;
+        bool isActive   = false;
+    };
+
+private:
+
+    ///
     /// \brief Матрица проекции
     ///
     QMatrix4x4              __projection;
@@ -170,22 +180,31 @@ private:
     ///
     /// \brief Текущий fps
     ///
-    int __fps = 0;
+    int                     __fps = 0;
 
     ///
     /// \brief Промежуточный расчет fps
     ///
-    int __tempFps = 0;
+    int                     __tempFps = 0;
 
     ///
     /// \brief Ожидание обновления
     ///
     bool                    __waitToUpdate;
 
+    ThreadRunInfo           __threadRunInfo;
+
 signals:
 
+    ///
+    /// \brief Сигнал оповещения о текущем количестве кадров в секунду
+    /// \param fps
+    ///
     void Fps( int fps );
 
+    ///
+    /// \brief Сигнал инициализации OpenGL
+    ///
     void InitGL();
 
 public slots:

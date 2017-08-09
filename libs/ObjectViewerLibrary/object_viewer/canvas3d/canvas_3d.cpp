@@ -23,6 +23,13 @@ Canvas3D::~Canvas3D()
     if ( __skyBox ) {
         delete __skyBox;
     }
+
+    if ( __threadRunInfo.isActive ) {
+
+        __threadRunInfo.isActive = false;
+
+        while ( __threadRunInfo.isRuning ) std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
+    }
 }
 
 QList<Object3D> *Canvas3D::objects()
@@ -202,16 +209,19 @@ void Canvas3D::wheelEvent ( QWheelEvent *event )
 
 void Canvas3D::__checkFps()
 {
-    while ( true ) {
+    __threadRunInfo.isActive = true;
+    __threadRunInfo.isRuning = true;
+
+    while ( __threadRunInfo.isActive ) {
 
         __fps = __tempFps;
         __tempFps = 0;
         emit Fps ( __fps );
 
         std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
-
-
     }
+
+    __threadRunInfo.isRuning = false;
 }
 
 void Canvas3D::updateCanvas()
