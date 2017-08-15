@@ -78,15 +78,15 @@ ISkyBox *SkbLoader::load(const QString pathToSkb)
                             << paths.up     << paths.front
                             << paths.left   << paths.down;
 
-//                QList<QImage> textures;
+                QStringList textures;
 
-//                for ( const QString &path: pathsImages ) {
+                for ( const QString &path: pathsImages ) {
 
-//                    QString src = fileInfo.dir ().absoluteFilePath ( path );
-//                    textures << QImage( src );
-//                }
+                    QString src = fileInfo.dir ().absoluteFilePath ( path );
+                    textures << src;
+                }
 
-                return new SkyBoxSixTextutes( 1000.0f, pathsImages );
+                return new SkyBoxSixTextutes( 1000.0f, textures );
             }
 
         }
