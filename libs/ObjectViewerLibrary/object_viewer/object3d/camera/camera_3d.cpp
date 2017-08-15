@@ -17,8 +17,8 @@ void Camera3D::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions)
     (void)functions;
     QMatrix4x4 viewMatrix;
     viewMatrix.setToIdentity();
-    viewMatrix.translate( _translate );
     viewMatrix.rotate( _rotate );
+    viewMatrix.translate( _translate );
     viewMatrix.scale( _scale );
 
     viewMatrix = viewMatrix * _globalTransform.inverted();
@@ -28,4 +28,9 @@ void Camera3D::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions)
 void Camera3D::resetRotation()
 {
     _rotate = QQuaternion();
+}
+
+void Camera3D::move(QVector3D &vector)
+{
+    translate( _rotate.inverted().rotatedVector( vector ) );
 }

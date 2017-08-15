@@ -72,7 +72,7 @@ void Canvas3D::initializeGL()
     glClearColor( clearColor.red(), clearColor.green(), clearColor.blue(), 1 );
 
     glEnable( GL_DEPTH_TEST );
-    glEnable( GL_CULL_FACE );
+//    glEnable( GL_CULL_FACE );
 
     initShaders();
 
@@ -192,18 +192,17 @@ void Canvas3D::mouseMoveEvent ( QMouseEvent *event )
         QVector2D diff = QVector2D( event->localPos () ) - __mousePosition;
         __mousePosition = QVector2D( event->localPos () );
 
-        __mainCamera->translate( QVector3D( diff.x (), -diff.y (), 0 ) / 250.0f );
+        __mainCamera->move( QVector3D( diff.x () / 250.0f, -diff.y () / 250.0f, 0 ) );
     }
 }
 
 void Canvas3D::wheelEvent ( QWheelEvent *event )
 {
     if ( event->delta() > 0 ) {
-        __mainCamera->translate( QVector3D( 0.0f, 0.0f, 0.25 ) );
+        __mainCamera->move( QVector3D( 0.0, 0.0, 0.25 ) );
     }
     else if ( event->delta() < 0 ) {
-
-        __mainCamera->translate( QVector3D( 0.0f, 0.0f, -0.25 ) );
+        __mainCamera->move( QVector3D( 0.0, 0.0, -0.25 ) );
     }
 }
 

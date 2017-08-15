@@ -85,6 +85,12 @@ public:
     ///
     QMatrix4x4 createModelMatrix() const;
 
+public:
+
+    QQuaternion currentRorate() const;
+
+    QVector3D   currentTranslate() const;
+
 protected:
 
     ///

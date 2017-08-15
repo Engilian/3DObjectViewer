@@ -13,6 +13,12 @@ public:
     void draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions );
 
     void resetRotation();
+
+public:
+
+    void move( QVector3D &vector );
+
+//    void roate( QVector3D &vector );
 };
 
 #endif // CAMERA_3D_H

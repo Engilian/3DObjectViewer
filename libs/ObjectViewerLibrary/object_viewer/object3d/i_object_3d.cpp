@@ -54,3 +54,13 @@ QMatrix4x4 IObject3D::createModelMatrix() const
 
     return modelMatrix;
 }
+
+QQuaternion IObject3D::currentRorate() const
+{
+    return _rotate;
+}
+
+QVector3D IObject3D::currentTranslate() const
+{
+    return _translate;
+}

@@ -286,7 +286,6 @@ QVector<VertexData> SimpleObject3dLoader_v1::readPolygon(const QString raw, QLis
         }
 
         result << result.last () << data.takeFirst () << result.first ();
-
     }
 
     return result;
