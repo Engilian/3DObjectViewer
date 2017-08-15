@@ -1,7 +1,7 @@
 #ifndef I_SKYBOX_H
 #define I_SKYBOX_H
 
-#include "object_viewer/object3d/shapes/other/simple_object_3d.h"
+#include "object_viewer/object3d/shapes/other/simple_object_3d_v1.h"
 
 ///
 /// \brief Интерфейс skybox

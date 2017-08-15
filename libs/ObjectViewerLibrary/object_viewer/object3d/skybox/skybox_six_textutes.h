@@ -7,7 +7,7 @@ class SkyBoxSixTextutes : public ISkyBox
 {
 public:
     SkyBoxSixTextutes( float size = 150.0f );
-    SkyBoxSixTextutes( float size, QList<QImage> textures );
+    SkyBoxSixTextutes(float size, QStringList textures );
     ~SkyBoxSixTextutes();
 public:
 
@@ -15,11 +15,11 @@ public:
 
 private:
 
-    void __init( float size, QList<QImage> textures );
+    void __init( float size, QStringList textures );
 
 private:
 
-    QList<SimpleObject3d *> __planes;
+    QList<SimpleObject3d_v1 *> __planes;
 
 };
 

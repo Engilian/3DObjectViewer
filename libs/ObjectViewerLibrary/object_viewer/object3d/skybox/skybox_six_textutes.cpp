@@ -9,16 +9,16 @@ SkyBoxSixTextutes::SkyBoxSixTextutes(float size)
                                 ":/example/skybox/cube_six_textures/left.png",
                                 ":/example/skybox/cube_six_textures/down.png" };
 
-    QList<QImage> textures;
+//    QList<QImage> textures;
 
-    for ( const QString &path: paths ) {
-        textures << QImage( path );
-    }
+//    for ( const QString &path: paths ) {
+//        textures << QImage( path );
+//    }
 
-    __init( size, textures );
+    __init( size, paths );
 }
 
-SkyBoxSixTextutes::SkyBoxSixTextutes(float size, QList<QImage> textures)
+SkyBoxSixTextutes::SkyBoxSixTextutes(float size, QStringList textures)
 {
 
     __init( size, textures );
@@ -33,12 +33,12 @@ SkyBoxSixTextutes::~SkyBoxSixTextutes()
 
 void SkyBoxSixTextutes::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions)
 {
-    for ( SimpleObject3d *obj: __planes ) {
+    for ( SimpleObject3d_v1 *obj: __planes ) {
         obj->draw( program, functions );
     }
 }
 
-void SkyBoxSixTextutes::__init(float size, QList<QImage> textures)
+void SkyBoxSixTextutes::__init(float size, QStringList textures)
 {
     float width_div_2 = size / 2.0f;
     QVector<VertexData> vertexes;
@@ -61,7 +61,7 @@ void SkyBoxSixTextutes::__init(float size, QList<QImage> textures)
         indexes.append ( 1 );
     }
 
-    __planes.append( new SimpleObject3d( vertexes, indexes, textures[0] ) );
+    __planes.append( new SimpleObject3d_v1( vertexes, indexes, textures[0] ) );
 
     vertexes.clear();
     indexes.clear();
@@ -83,7 +83,7 @@ void SkyBoxSixTextutes::__init(float size, QList<QImage> textures)
         indexes.append ( 1 );
     }
 
-    __planes.append( new SimpleObject3d( vertexes, indexes, textures[1] ) );
+    __planes.append( new SimpleObject3d_v1( vertexes, indexes, textures[1] ) );
 
     vertexes.clear();
     indexes.clear();
@@ -105,7 +105,7 @@ void SkyBoxSixTextutes::__init(float size, QList<QImage> textures)
         indexes.append ( 1 );
     }
 
-    __planes.append( new SimpleObject3d( vertexes, indexes, textures[2] ) );
+    __planes.append( new SimpleObject3d_v1( vertexes, indexes, textures[2] ) );
 
     vertexes.clear();
     indexes.clear();
@@ -127,7 +127,7 @@ void SkyBoxSixTextutes::__init(float size, QList<QImage> textures)
         indexes.append ( 1 );
     }
 
-    __planes.append( new SimpleObject3d( vertexes, indexes, textures[3] ) );
+    __planes.append( new SimpleObject3d_v1( vertexes, indexes, textures[3] ) );
 
     vertexes.clear();
     indexes.clear();
@@ -150,7 +150,7 @@ void SkyBoxSixTextutes::__init(float size, QList<QImage> textures)
         indexes.append ( 1 );
     }
 
-    __planes.append( new SimpleObject3d( vertexes, indexes, textures[4] ) );
+    __planes.append( new SimpleObject3d_v1( vertexes, indexes, textures[4] ) );
 
     vertexes.clear();
     indexes.clear();
@@ -173,7 +173,7 @@ void SkyBoxSixTextutes::__init(float size, QList<QImage> textures)
         indexes.append ( 1 );
     }
 
-    __planes.append( new SimpleObject3d( vertexes, indexes, textures[5] ) );
+    __planes.append( new SimpleObject3d_v1( vertexes, indexes, textures[5] ) );
 
     vertexes.clear();
     indexes.clear();

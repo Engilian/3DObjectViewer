@@ -1,6 +1,6 @@
 #include "skybox_one_cube_texture.h"
 
-SkyBoxOneCubeTexture::SkyBoxOneCubeTexture( float width, QImage texture)
+SkyBoxOneCubeTexture::SkyBoxOneCubeTexture( float width, QString texture)
 {
     float width_div_2 = width / 2.0f;
     QVector<VertexData> vertexes;
@@ -53,7 +53,7 @@ SkyBoxOneCubeTexture::SkyBoxOneCubeTexture( float width, QImage texture)
         indexes.append ( i + 1 );
     }
 
-    __cube = new SimpleObject3d( vertexes, indexes, texture );
+    __cube = new SimpleObject3d_v1( vertexes, indexes, texture );
 }
 
 SkyBoxOneCubeTexture::~SkyBoxOneCubeTexture()

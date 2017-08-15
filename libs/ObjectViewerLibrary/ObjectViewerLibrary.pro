@@ -23,7 +23,10 @@ SOURCES += object_viewer_info.cpp \
     object_viewer/object3d/object_loader/object_loader_simple_object3d.cpp \
     object_viewer/scene3d/i_scene_3d.cpp \
     object_viewer/scene3d/simple_scene_3d.cpp \
-    object_viewer/object3d/skybox/loader/skb/skb_loader.cpp
+    object_viewer/object3d/skybox/loader/skb/skb_loader.cpp \
+    object_viewer/object3d/shapes/other/simple_object_3d_v1.cpp \
+    object_viewer/object3d/shapes/other/texture/texture_creator.cpp \
+    object_viewer/object3d/object_loader/object_loader_simple_object3d_v1.cpp
 
 HEADERS += object_viewer_info.h \
     object_viewer/object3d/i_object_3d.h \
@@ -45,7 +48,10 @@ HEADERS += object_viewer_info.h \
     object_viewer/scene3d/i_scene_3d.h \
     object_viewer/scene3d/simple_scene_3d.h \
     object_viewer/scene3d/scene_3d.h \
-    object_viewer/object3d/skybox/loader/skb/skb_loader.h
+    object_viewer/object3d/skybox/loader/skb/skb_loader.h \
+    object_viewer/object3d/shapes/other/simple_object_3d_v1.h \
+    object_viewer/object3d/shapes/other/texture/texture_creator.h \
+    object_viewer/object3d/object_loader/object_loader_simple_object3d_v1.h
 
 RESOURCES += \
     res/shaders/shaders.qrc \
