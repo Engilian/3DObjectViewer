@@ -192,17 +192,22 @@ void Canvas3D::mouseMoveEvent ( QMouseEvent *event )
         QVector2D diff = QVector2D( event->localPos () ) - __mousePosition;
         __mousePosition = QVector2D( event->localPos () );
 
-        __mainCamera->move( QVector3D( diff.x () / 250.0f, -diff.y () / 250.0f, 0 ) );
+        QVector3D vector( diff.x () / 250.0f, -diff.y () / 250.0f, 0 );
+        __mainCamera->move( vector );
     }
 }
 
 void Canvas3D::wheelEvent ( QWheelEvent *event )
 {
+
+
     if ( event->delta() > 0 ) {
-        __mainCamera->move( QVector3D( 0.0, 0.0, 0.25 ) );
+        QVector3D vector( 0.0, 0.0, 0.25 );
+        __mainCamera->move( vector );
     }
     else if ( event->delta() < 0 ) {
-        __mainCamera->move( QVector3D( 0.0, 0.0, -0.25 ) );
+        QVector3D vector( 0.0, 0.0, -0.25 );
+        __mainCamera->move( vector );
     }
 }
 

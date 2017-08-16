@@ -27,8 +27,9 @@ MainWindow::MainWindow(QWidget *parent) :
     __scene = new Scene3D( __viewer );
 
     {
-        connect ( &__initSceneTimer, SIGNAL(timeout()), this, SLOT(__initDefaultScene()));
-        __initSceneTimer.start ( 1500 );
+//        connect ( &__initSceneTimer, SIGNAL(timeout()), this, SLOT(__initDefaultScene()));
+//        __initSceneTimer.start ( 1500 );
+        connect ( __viewer, &Canvas3D::InitGL, this, &MainWindow::__initDefaultScene );
     }
 
     {
@@ -90,22 +91,26 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
     if ( event->key () == Qt::Key_W ) {
 
-        __viewer->mainCamera ()->move ( QVector3D( 0.0f, 0.0f, stepTranslate ) );
+        QVector3D vector( 0.0f, 0.0f, stepTranslate );
+        __viewer->mainCamera ()->move ( vector );
     }
 
     if ( event->key () == Qt::Key_S ) {
 
-        __viewer->mainCamera ()->move ( QVector3D( 0.0f, 0.0f, -stepTranslate ) );
+        QVector3D vector( 0.0f, 0.0f, -stepTranslate );
+        __viewer->mainCamera ()->move ( vector );
     }
 
     if ( event->key () == Qt::Key_A ) {
 
-        __viewer->mainCamera ()->move ( QVector3D( stepTranslate, 0.0f, 0.0f ) );
+        QVector3D vector( stepTranslate, 0.0f, 0.0f );
+        __viewer->mainCamera ()->move ( vector );
     }
 
     if ( event->key () == Qt::Key_D ) {
 
-        __viewer->mainCamera ()->move ( QVector3D( -stepTranslate, 0.0f, 0.0f ) );
+        QVector3D vector( -stepTranslate, 0.0f, 0.0f );
+        __viewer->mainCamera ()->move ( vector );
     }
 
     if ( event->key () == Qt::Key_Q ) {
