@@ -30,6 +30,9 @@ public:
 
     VertexData readVertexData( const QString raw, QList<QVector3D> *points, QList<QVector3D> *normas, QList<QVector2D> *uvs );
 
+public:
+
+    QString getFileName( QString path ) const;
 
 };
 

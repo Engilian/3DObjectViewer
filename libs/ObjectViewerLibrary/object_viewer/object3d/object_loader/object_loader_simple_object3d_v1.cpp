@@ -147,7 +147,7 @@ QString SimpleObject3dLoader_v1::loadTexture(QString pathMtl, QString nameMtl)
 
                 if ( line.indexOf( "map_Kd" ) == 0 ) {
 
-                    QString path = line.mid( 6 ).trimmed();
+                    QString path = QDir::toNativeSeparators ( line.mid( 6 ).trimmed() );
 
                     bool okLoadTexture = false;
                     image = loadTexture ( pathMtl, path, &okLoadTexture );
@@ -198,7 +198,7 @@ QString SimpleObject3dLoader_v1::loadTexture(QString pathMtl, QString pathTextur
         QFileInfo textureFileInfo( pathTexture );
         QFileInfo mtlFileInfo ( pathMtl );
 
-        QString fileName  = textureFileInfo.fileName ();
+        QString fileName  = getFileName ( textureFileInfo.fileName () );
         QDir mtlDirectory = mtlFileInfo.dir ();
 
         QFile f( mtlDirectory.absoluteFilePath ( fileName ) );
@@ -329,4 +329,23 @@ VertexData SimpleObject3dLoader_v1::readVertexData(const QString raw, QList<QVec
     }
 
     return vertex;
+}
+
+QString SimpleObject3dLoader_v1::getFileName(QString path) const
+{
+    int pos = path.lastIndexOf ( "/" );
+
+    if  ( pos != -1 ) {
+
+        return path.mid ( pos + 1 );
+    }
+
+    pos = path.lastIndexOf ( "\\" );
+
+    if  ( pos != -1 ) {
+
+        return path.mid ( pos + 1 );
+    }
+
+    return path;
 }
