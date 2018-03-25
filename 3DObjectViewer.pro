@@ -7,5 +7,6 @@ CONFIG      += ordered
 
 SUBDIRS += \
     libs \
-    apps \
-    tests 
+    apps
+
+include(res.pri)

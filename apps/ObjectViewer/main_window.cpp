@@ -6,10 +6,16 @@
 #include <QInputDialog>
 #include <QFileDialog>
 
+#include <QDir>
+#include <QFile>
+#include <QCoreApplication>
+
 #include <object_viewer/object3d/object_loader/object_loader.h>
 #include <object_viewer/object3d/shapes/cube/example_cube_3d.h>
 #include <object_viewer/object3d/group/group_3d.h>
 #include <object_viewer/object3d/skybox/loader/skb/skb_loader.h>
+#include <object_viewer/object3d/skybox/skybox_one_cube_texture.h>
+#include <object_viewer/object3d/skybox/skybox_six_textutes.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -25,11 +31,8 @@ MainWindow::MainWindow(QWidget *parent) :
     lay->addWidget ( __viewer );
 
     __scene = new Scene3D( __viewer );
-
     {
-//        connect ( &__initSceneTimer, SIGNAL(timeout()), this, SLOT(__initDefaultScene()));
-//        __initSceneTimer.start ( 1500 );
-        connect ( __viewer, &Canvas3D::InitGL, this, &MainWindow::__initDefaultScene );
+        connect ( __viewer, &Canvas3D::InitGL, this, &MainWindow::initDefaultScene );
     }
 
     {
@@ -44,10 +47,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->statusBar->addWidget ( &__fps, 10 );
     __fps.setAlignment ( Qt::AlignVCenter | Qt::AlignRight );
-    connect ( __viewer, &Canvas3D::Fps, this, &MainWindow::__updateFps );
+    connect ( __viewer, &Canvas3D::Fps, this, &MainWindow::_updateFps );
 
 
     __connectMenu ();
+    QApplication::instance()->installEventFilter( this );
 }
 
 MainWindow::~MainWindow()
@@ -67,27 +71,43 @@ void MainWindow::initDefaultScene()
 {
     __viewer->initDefaultSkyBox ();
     __viewer->setViewingAngle ( 40 );
+
+    createSquirrel();
 }
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     Q_UNUSED( watched );
 
-    if ( event->type () == QEvent::KeyRelease ) {
+    if ( event->type() == QEvent::KeyPress ) {
 
 
-        keyReleaseEvent ( dynamic_cast<QKeyEvent*>( event ) );
+        keyHandler( dynamic_cast<QKeyEvent*>( event ) );
 
     }
 
-    return false;
+    return QMainWindow::eventFilter( watched, event );
 }
 
-void MainWindow::keyPressEvent(QKeyEvent *event)
+void MainWindow::__connectMenu()
 {
-    float stepTranslate = 0.10f;
+    connect ( ui->menu_skybox->actions ().at ( 0 ), SIGNAL(triggered(bool)), this, SLOT(loadSkyBox()) );
+    connect ( ui->menu_skybox->actions ().at ( 1 ), SIGNAL(triggered(bool)), this, SLOT(loadSkyBoxOneFile()) );
+    connect ( ui->menu_skybox->actions ().at ( 2 ), SIGNAL(triggered(bool)), this, SLOT(loadSkyBoxSixFile()) );
+    connect ( ui->menu_skybox->actions ().at ( 4 ), SIGNAL(triggered(bool)), this, SLOT(createDefaultSkyBox()) );
+    connect ( ui->menu_skybox->actions ().at ( 6 ), SIGNAL(triggered(bool)), this, SLOT(clearSkyBox()) );
 
-//    qDebug() << event->key ();
+    connect ( ui->menu_obj->actions ().at ( 0 ), SIGNAL(triggered(bool)), this, SLOT(loadObject()) );
+    connect ( ui->menu_obj->actions ().at ( 2 ), SIGNAL(triggered(bool)), this, SLOT(createSquirrel()) );
+    connect ( ui->menu_obj->actions ().at ( 3 ), SIGNAL(triggered(bool)), this, SLOT(createCube()) );
+    connect ( ui->menu_obj->actions ().at ( 4 ), SIGNAL(triggered(bool)), this, SLOT(createMonkey()) );
+    connect ( ui->menu_obj->actions ().at ( 6 ), SIGNAL(triggered(bool)), this, SLOT(createSquirrelsArmy()) );
+    connect ( ui->menu_obj->actions ().at ( 8 ), SIGNAL(triggered(bool)), this, SLOT(clearObjects()) );
+}
+
+void MainWindow::keyHandler(QKeyEvent *event)
+{
+    float stepTranslate = 0.05f;
 
     if ( event->key () == Qt::Key_W ) {
 
@@ -115,76 +135,52 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
     if ( event->key () == Qt::Key_Q ) {
 
-        QVector3D axis = QVector3D( 0, 0, 0.5f );
+        QVector3D axis = QVector3D( 0, 0, 0.05f );
         __viewer->mainCamera ()->rotate( QQuaternion::fromAxisAndAngle ( axis, -5 ) );
     }
 
     if ( event->key () == Qt::Key_E ) {
 
-        QVector3D axis = QVector3D( 0, 0, 0.5f );
+        QVector3D axis = QVector3D( 0, 0, 0.05f );
         __viewer->mainCamera ()->rotate( QQuaternion::fromAxisAndAngle ( axis, 5 ) );
     }
 
     if ( event->key () == Qt::Key_Comma ) {
 
-        QVector3D axis = QVector3D( 0, 0.5f, 0.0f );
-        __viewer->mainCamera ()->rotate( QQuaternion::fromAxisAndAngle ( axis, 5 ) );
+        QVector3D axis = QVector3D( 0, 0.05f, 0.0f );
+        __viewer->mainCamera ()->rotate( QQuaternion::fromAxisAndAngle ( axis, -0.5 ) );
     }
 
     if ( event->key () == Qt::Key_Period ) {
 
-        QVector3D axis = QVector3D( 0, 0.5f, 0.0f );
-        __viewer->mainCamera ()->rotate( QQuaternion::fromAxisAndAngle ( axis, -5 ) );
+        QVector3D axis = QVector3D( 0, 0.05f, 0.0f );
+        __viewer->mainCamera ()->rotate( QQuaternion::fromAxisAndAngle ( axis, 0.5 ) );
     }
 }
 
-void MainWindow::__connectMenu()
-{
-    connect ( ui->menu_skybox->actions ().at ( 0 ), SIGNAL(triggered(bool)), this, SLOT(__loadSkyBox()) );
-    connect ( ui->menu_skybox->actions ().at ( 1 ), SIGNAL(triggered(bool)), this, SLOT(__loadSkyBoxOneFile()) );
-    connect ( ui->menu_skybox->actions ().at ( 2 ), SIGNAL(triggered(bool)), this, SLOT(__loadSkyBoxSixFile()) );
-    connect ( ui->menu_skybox->actions ().at ( 4 ), SIGNAL(triggered(bool)), this, SLOT(__createDefaultSkyBox()) );
-    connect ( ui->menu_skybox->actions ().at ( 6 ), SIGNAL(triggered(bool)), this, SLOT(__clearSkyBox()) );
-
-    connect ( ui->menu_obj->actions ().at ( 0 ), SIGNAL(triggered(bool)), this, SLOT(__loadObject()) );
-    connect ( ui->menu_obj->actions ().at ( 2 ), SIGNAL(triggered(bool)), this, SLOT(__createSquirrel()) );
-    connect ( ui->menu_obj->actions ().at ( 3 ), SIGNAL(triggered(bool)), this, SLOT(__createCube()) );
-    connect ( ui->menu_obj->actions ().at ( 4 ), SIGNAL(triggered(bool)), this, SLOT(__createMonkey()) );
-    connect ( ui->menu_obj->actions ().at ( 6 ), SIGNAL(triggered(bool)), this, SLOT(__createSquirrelsArmy()) );
-    connect ( ui->menu_obj->actions ().at ( 8 ), SIGNAL(triggered(bool)), this, SLOT(__clearObjects()) );
-}
-
-void MainWindow::__initDefaultScene()
-{
-    if ( __initSceneTimer.isActive () ) {
-        __initSceneTimer.stop ();
-    }
-
-    initDefaultScene ();
-}
-
-void MainWindow::__updateFps(int fps)
+void MainWindow::_updateFps(int fps)
 {
     __fps.setText ( QString::number ( fps ) + " fp/s" );
 }
 
-void MainWindow::__clearObjects()
+void MainWindow::clearObjects()
 {
     qDebug() << "Clear Objects";
     __scene->clearObjects ();
 }
 
-void MainWindow::__clearSkyBox()
+void MainWindow::clearSkyBox()
 {
     qDebug() << "Clear SkyBox";
     __viewer->destroySkyBox ();
 }
 
-void MainWindow::__loadSkyBox()
+void MainWindow::loadSkyBox()
 {
     QFileDialog dialog( this, "Choice my *.skb file" );
     dialog.setFilter ( QDir::Files );
-    dialog.setDirectory ( QApplication::applicationDirPath () );
+    dialog.setDirectory ( QDir::fromNativeSeparators(
+                              QApplication::applicationDirPath () + "/res" ) );
     dialog.setNameFilter(tr("Skybox xml file (*.skb)"));
     dialog.setMinimumSize ( 800, 600 );
 
@@ -203,27 +199,41 @@ void MainWindow::__loadSkyBox()
     }
 }
 
-void MainWindow::__loadSkyBoxOneFile()
+void MainWindow::loadSkyBoxOneFile()
 {
-    qDebug() << "Load skybox one file";
+    QFileDialog dialog( this, "Choice skybox file" );
+    dialog.setFilter ( QDir::Files );
+    dialog.setDirectory ( QDir::fromNativeSeparators(
+                              QApplication::applicationDirPath () + "/res" ) );
+    dialog.setMinimumSize ( 800, 600 );
+
+    if ( dialog.exec() )
+    {
+        auto *skybox = new SkyBoxOneCubeTexture( 10.0f,
+                                                 dialog.selectedFiles().first() );
+
+        __viewer->destroySkyBox ();
+        __viewer->setSkyBox ( skybox );
+    }
 }
 
-void MainWindow::__loadSkyBoxSixFile()
+void MainWindow::loadSkyBoxSixFile()
 {
     qDebug() << "Load skybox six texture";
 }
 
-void MainWindow::__createDefaultSkyBox()
+void MainWindow::createDefaultSkyBox()
 {
     __scene->viewPort ()->destroySkyBox ();
     __scene->viewPort ()->initDefaultSkyBox ();
 }
 
-void MainWindow::__loadObject()
+void MainWindow::loadObject()
 {
     QFileDialog dialog( this, "Choice *.obj file" );
     dialog.setFilter ( QDir::Files );
-    dialog.setDirectory ( QApplication::applicationDirPath () );
+    dialog.setDirectory ( QDir::fromNativeSeparators(
+                              QApplication::applicationDirPath () + "/res" ) );
     dialog.setNameFilter(tr("Wavefront file (*.obj)"));
     dialog.setMinimumSize ( 800, 600 );
 
@@ -246,18 +256,10 @@ void MainWindow::__loadObject()
         }
 
         __scene->addObject ( obj );
-
-//        auto *skybox = loader.load ( dialog.selectedFiles ().first () );
-
-//        if ( skybox ) {
-
-//            __viewer->destroySkyBox ();
-//            __viewer->setSkyBox ( skybox );
-//        }
     }
 }
 
-void MainWindow::__createSquirrelsArmy()
+void MainWindow::createSquirrelsArmy()
 {
     bool ok = false;
 
@@ -279,6 +281,16 @@ void MainWindow::__createSquirrelsArmy()
     float posX = ( rowLength * ( 1.0 * step ) ) / 2;
     QVector3D pos( 0.0, 0.0, 0.0 );
 
+    QString model = QDir::fromNativeSeparators(
+                QCoreApplication::applicationDirPath() +
+                "/res/models/belka/belka.obj"
+                );
+
+    QString material = QDir::fromNativeSeparators(
+                QCoreApplication::applicationDirPath() +
+                "/res/models/belka/belka.mtl"
+                );
+
     for ( int i = 0; i < armySize; ++i ) {
 
         if ( i % rowLength == 0 && i > 0 ) {
@@ -287,7 +299,7 @@ void MainWindow::__createSquirrelsArmy()
             pos.setX ( 0.0 );
         }
 
-        QList<IObject3D*> list = loader.load( ":/example/belka/belka.obj", ":/example/belka/belka.mtl" );
+        QList<IObject3D*> list = loader.load( model, material );
         QApplication::processEvents ();
 
         for ( IObject3D *obj: list ) {
@@ -308,11 +320,21 @@ void MainWindow::__createSquirrelsArmy()
     __scene->addObject ( Object3D( group ) );
 }
 
-void MainWindow::__createSquirrel()
+void MainWindow::createSquirrel()
 {
     ObjectLoader loader;
 
-    QList<IObject3D*> list = loader.load( ":/example/belka/belka.obj", ":/example/belka/belka.mtl" );
+    QString model = QDir::fromNativeSeparators(
+                QCoreApplication::applicationDirPath() +
+                "/res/models/belka/belka.obj"
+                );
+
+    QString material = QDir::fromNativeSeparators(
+                QCoreApplication::applicationDirPath() +
+                "/res/models/belka/belka.mtl"
+                );
+
+    QList<IObject3D*> list = loader.load( model, material );
 
     for ( IObject3D *obj: list ) {
 
@@ -322,17 +344,27 @@ void MainWindow::__createSquirrel()
     }
 }
 
-void MainWindow::__createCube()
+void MainWindow::createCube()
 {
     Object3D obj( new  ExampleCube3d() );
     __scene->addObject ( obj );
 }
 
-void MainWindow::__createMonkey()
+void MainWindow::createMonkey()
 {
     ObjectLoader loader;
 
-    QList<IObject3D*> list = loader.load( ":/example/suzanne.obj", ":/example/suzanne.mtl" );
+    QString model = QDir::fromNativeSeparators(
+                QCoreApplication::applicationDirPath() +
+                "/res/models/suzanne.obj"
+                );
+
+    QString material = QDir::fromNativeSeparators(
+                QCoreApplication::applicationDirPath() +
+                "/res/models/suzanne.mtl"
+                );
+
+    QList<IObject3D*> list = loader.load( model, material );
 
     for ( IObject3D *obj: list ) {
 

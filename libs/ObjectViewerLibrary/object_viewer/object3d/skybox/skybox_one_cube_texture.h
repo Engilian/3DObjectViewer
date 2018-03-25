@@ -9,7 +9,7 @@
 class SkyBoxOneCubeTexture: public ISkyBox
 {
 public:
-    SkyBoxOneCubeTexture(float width = 150.0f, QString texture = ":/example/skybox_1file/test_skybox_one_cube_texture.jpg"  );
+    SkyBoxOneCubeTexture(float width, QString texture );
     ~SkyBoxOneCubeTexture();
 public:
     void draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions);

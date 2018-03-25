@@ -1,10 +1,10 @@
-QT       += opengl xml
-QT       -= gui
+QT          += opengl xml
+QT          -= gui
 
-TARGET = obj_viewer_3d
-TEMPLATE = lib
-CONFIG += staticlib
-CONFIG += c++11
+TARGET      = obj_viewer_3d
+TEMPLATE    = lib
+CONFIG      += staticlib
+CONFIG      += c++11
 
 SOURCES += object_viewer_info.cpp \
     object_viewer/object3d/i_object_3d.cpp \
@@ -52,8 +52,3 @@ HEADERS += object_viewer_info.h \
     object_viewer/object3d/shapes/other/simple_object_3d_v1.h \
     object_viewer/object3d/shapes/other/texture/texture_creator.h \
     object_viewer/object3d/object_loader/object_loader_simple_object3d_v1.h
-
-RESOURCES += \
-    res/shaders/shaders.qrc \
-    res/textures/textures.qrc \
-    res/models/models.qrc

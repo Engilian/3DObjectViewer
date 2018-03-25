@@ -5,8 +5,6 @@
 
 Canvas3D::Canvas3D() : QOpenGLWidget(), __mainCamera(0), __skyBox(0)
 {
-//    initializeOpenGLFunctions();
-
     connect ( &__repaintTimer, SIGNAL(timeout()), this, SLOT(updateCanvas()));
     __repaintTimer.start ( 1000.0 / 60.0  );
 
@@ -181,11 +179,17 @@ void Canvas3D::mouseMoveEvent ( QMouseEvent *event )
         QVector2D diff = QVector2D( event->localPos () ) - __mousePosition;
         __mousePosition = QVector2D( event->localPos () );
 
-        float angle = diff.length () / 2.0f;
+        QVector2D diffX = QVector2D( diff.x(), 0 );
+        QVector2D diffY = QVector2D( 0, diff.y() );
 
-        QVector3D axis = QVector3D( diff.y (), diff.x (), 0.0 );
+        float angleX = diffX.length () / 2.0f;
+        float angleY = diffY.length () / 2.0f;
 
-        __mainCamera->rotate( QQuaternion::fromAxisAndAngle ( axis, angle ) );
+        QVector3D axisX = QVector3D( diffX.y (), diffX.x (), 0.0 );
+        __mainCamera->rotate( QQuaternion::fromAxisAndAngle ( axisX, angleX ) );
+
+        QVector3D axisY = QVector3D( diffY.y (), diffY.x (), 0.0 );
+        __mainCamera->rotate( QQuaternion::fromAxisAndAngle ( axisY, angleY ) );
     }
     else if ( event->buttons () == Qt::MidButton ) {
 

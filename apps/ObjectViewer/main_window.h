@@ -39,17 +39,15 @@ protected:
     void initDefaultScene();
 
 protected:
-
     bool eventFilter (QObject *watched, QEvent *event);
-
-    void keyPressEvent (QKeyEvent *event);
-
 private:
 
     ///
     /// \brief Подключение событий меню
     ///
     void __connectMenu();
+
+    void keyHandler( QKeyEvent *event );
 
 
 private:
@@ -71,44 +69,25 @@ private:
     ///
     Scene3D             *__scene;
 
-    ///
-    /// \brief Таймер инициализации
-    ///
-    QTimer              __initSceneTimer;
-
 private slots:
+    void _updateFps( int fps );
 
-    void __initDefaultScene ();
+public slots:
 
-    void __updateFps( int fps );
+    void clearObjects();
 
-private slots:
+    void clearSkyBox();
 
-    void __clearObjects();
+    void loadSkyBox();
+    void loadSkyBoxOneFile();
+    void loadSkyBoxSixFile();
+    void createDefaultSkyBox();
 
-    void __clearSkyBox();
-
-private slots:
-
-    void __loadSkyBox();
-
-    void __loadSkyBoxOneFile();
-
-    void __loadSkyBoxSixFile();
-
-    void __createDefaultSkyBox();
-
-private slots:
-
-    void __loadObject();
-
-    void __createSquirrelsArmy ();
-
-    void __createSquirrel();
-
-    void __createCube();
-
-    void __createMonkey();
+    void loadObject();
+    void createSquirrelsArmy ();
+    void createSquirrel();
+    void createCube();
+    void createMonkey();
 
 
 };

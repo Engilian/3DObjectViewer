@@ -1,19 +1,32 @@
 #include "skybox_six_textutes.h"
 
+#include <QDir>
+#include <QString>
+#include <QCoreApplication>
+
+namespace
+{
+
+QString getTexturePath( const QString &fileName )
+{
+
+    return QDir::fromNativeSeparators(
+                QCoreApplication::applicationDirPath() +
+                "/res/textures/skybox/cube_six_textures/" +
+                fileName
+                );
+}
+
+};
+
 SkyBoxSixTextutes::SkyBoxSixTextutes(float size)
 {
-    const QStringList paths = { ":/example/skybox/cube_six_textures/back.png",
-                                ":/example/skybox/cube_six_textures/right.png",
-                                ":/example/skybox/cube_six_textures/up.png",
-                                ":/example/skybox/cube_six_textures/front.png",
-                                ":/example/skybox/cube_six_textures/left.png",
-                                ":/example/skybox/cube_six_textures/down.png" };
-
-//    QList<QImage> textures;
-
-//    for ( const QString &path: paths ) {
-//        textures << QImage( path );
-//    }
+    const QStringList paths = { getTexturePath ( "back.png" ),
+                                getTexturePath ( "right.png" ),
+                                getTexturePath ( "up.png" ),
+                                getTexturePath ( "front.png" ),
+                                getTexturePath ( "left.png" ),
+                                getTexturePath ( "down.png" ) };
 
     __init( size, paths );
 }
